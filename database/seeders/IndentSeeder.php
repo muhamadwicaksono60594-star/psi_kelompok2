@@ -5,45 +5,73 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Indent;
 use App\Models\User;
+use Faker\Factory as Faker;
 
 class IndentSeeder extends Seeder
 {
     public function run(): void
     {
-        // Pastikan ada user dulu (karena ada relasi user_id)
+        $faker = Faker::create('id_ID');
+
+        // Daftar instansi yang sering berpartner dengan Radar Kediri
+        $instansi = [
+            'Universitas Nusantara PGRI Kediri',
+            'Universitas Islam Kadiri',
+            'Universitas Brawijaya',
+            'Universitas Negeri Malang',
+            'Politeknik Negeri Malang',
+            'SMK Negeri 1 Kediri',
+            'SMK Negeri 2 Kediri',
+            'SMK Telkom Malang',
+            'Universitas Kadiri',
+            'Politeknik Negeri Kediri',
+        ];
+
+        // Jurusan relevan dengan bidang Radar Kediri (multimedia, jurnalistik, IT)
+        $jurusan = [
+            'Manajemen Media',
+            'Desain Komunikasi Visual',
+            'Manajemen Informatika',
+            'Teknik Komputer',
+            'Jurnalistik',
+            'Broadcasting',
+            'Teknik Multimedia',
+            'Sistem Informasi',
+            'Teknik Informatika',
+            'Ilmu Komunikasi',
+        ];
+
+        $status = ['menunggu', 'diterima', 'ditolak'];
+
+        // Buat 1 user utama agar relasi user_id valid
         $user = User::firstOrCreate(
-            ['email' => 'mahasiswa@example.com'],
+            ['email' => 'indent_user@example.com'],
             [
-                'name' => 'Rizky Mahasiswa',
+                'name' => 'User Indent Seeder',
                 'password' => bcrypt('password123'),
+                'jenjang' => 'Mahasiswa',
+                'role' => 'user',
             ]
         );
 
-        // Tambahkan data indent contoh
-        Indent::create([
-            'user_id' => $user->id,
-            'nama' => 'Budi Santoso',
-            'asal_instansi' => 'Universitas Nusantara PGRI Kediri',
-            'jurusan' => 'Manajemen Informatika',
-            'nim_nis' => '2309482323',
-            'no_telepon' => '085123456789',
-            'alamat' => 'Jl. Hasanudin No. 15 Kediri',
-            'tanggal_mulai' => now()->addDays(7),
-            'tanggal_selesai' => now()->addMonths(3),
-            'status' => 'menunggu', // bisa juga 'diterima' atau 'ditolak'
-        ]);
+        // Tambahkan data dummy sebanyak 50 baris
+        for ($i = 1; $i <= 50; $i++) {
+            $tanggalMulai = $faker->dateTimeBetween('2024-01-01', '2025-12-31');
+            // Tambahkan durasi 1–3 bulan setelah tanggal mulai
+            $tanggalSelesai = (clone $tanggalMulai)->modify('+' . rand(30, 90) . ' days');
 
-        Indent::create([
-            'user_id' => $user->id,
-            'nama' => 'Siti Rahmawati',
-            'asal_instansi' => 'Politeknik Negeri Malang',
-            'jurusan' => 'Teknik Komputer',
-            'nim_nis' => '2309400001',
-            'no_telepon' => '085678912345',
-            'alamat' => 'Jl. Diponegoro No. 9 Kediri',
-            'tanggal_mulai' => now()->addDays(14),
-            'tanggal_selesai' => now()->addMonths(4),
-            'status' => 'menunggu',
-        ]);
+            Indent::create([
+                'user_id' => $user->id,
+                'nama' => $faker->name,
+                'asal_instansi' => $faker->randomElement($instansi),
+                'jurusan' => $faker->randomElement($jurusan),
+                'nim_nis' => $faker->numerify('##########'),
+                'no_telepon' => '08' . $faker->numerify('##########'),
+                'alamat' => $faker->address,
+                'tanggal_mulai' => $tanggalMulai,
+                'tanggal_selesai' => $tanggalSelesai,
+                'status' => $faker->randomElement($status),
+            ]);
+        }
     }
 }

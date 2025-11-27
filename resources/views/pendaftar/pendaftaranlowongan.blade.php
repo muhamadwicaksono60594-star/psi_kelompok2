@@ -281,6 +281,25 @@
                 
                 <form id="pendaftaranForm" method="POST" action="{{ route('pendaftar.store') }}" enctype="multipart/form-data">
                     @csrf
+
+                    {{-- Data lowongan yang dipilih --}}
+                    <input type="hidden" name="lowongan_id" value="{{ $lowongan->id }}">
+
+                    {{-- Tanggal mulai & selesai otomatis --}}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="tanggal_mulai" class="form-label">Tanggal Mulai Magang</label>
+                            <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control" 
+                                   value="{{ $lowongan->tanggal_mulai }}" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="tanggal_selesai" class="form-label">Tanggal Selesai Magang</label>
+                            <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control" 
+                                   value="{{ $lowongan->tanggal_selesai }}" readonly>
+                        </div>
+                    </div>
+
+                    {{-- Data diri --}}
                     <div class="mb-3">
                         <label for="nama" class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
                         <input type="text" name="nama" id="nama" class="form-control" placeholder="Masukkan nama lengkap" required>
@@ -311,13 +330,12 @@
                         <textarea name="alamat" id="alamat" rows="3" class="form-control" placeholder="Masukkan alamat lengkap" required></textarea>
                     </div>
 
-                    <!-- 🔽 Bagian Tambahan: Upload Berkas -->
+                    {{-- Upload berkas --}}
                     <div class="mb-3">
                         <label for="berkas" class="form-label">Upload Berkas (boleh lebih dari satu)</label>
                         <input type="file" name="berkas[]" id="berkas" class="form-control" multiple required>
-                        <small class="text-muted">Format yang diizinkan: PDF, DOC, DOCX. Maks 5MB per file.</small>
+                        <small class="text-muted">Format: PDF, DOC, DOCX. Maks 5MB per file.</small>
                     </div>
-                    <!-- 🔼 Akhir bagian upload -->
 
                     <input type="hidden" name="status" value="menunggu">
                     

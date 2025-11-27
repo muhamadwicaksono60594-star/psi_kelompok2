@@ -15,13 +15,13 @@
                 <i class="fas fa-clipboard-list"></i> Status Pendaftar
             </a>
         </li>
-        {{-- <li>
+        <li>
             <a href="#" onclick="confirmLogout(event)">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
                 @csrf
             </form>
-        </li> --}}
+        </li>
     </ul>
 </div>

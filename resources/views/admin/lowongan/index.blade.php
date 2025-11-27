@@ -129,6 +129,45 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        .has-submenu .submenu {
+            list-style: none;
+            padding-left: 3.5rem;
+            padding-top: 0.3rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .submenu-link {
+            display: block;
+            padding: 0.6rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            color: rgba(255,255,255,0.85);
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .submenu-link:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+
+        /* Untuk panah */
+        .submenu-arrow {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+        }
+
+        /* Bila submenu terbuka */
+        .has-submenu.open > .submenu {
+            display: flex;
+        }
+
+        .has-submenu.open > .sidebar-link .submenu-arrow {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body>
@@ -239,55 +278,66 @@
             </div>
         </div>
     </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+                 document.querySelectorAll('.submenu-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
 
-    <script>
-        // Handle form submit
-        document.getElementById('formTambahLowongan').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Ambil data dari form
-            const judul = document.getElementById('judul').value;
-            const divisi = document.getElementById('divisi_id').options[document.getElementById('divisi_id').selectedIndex].text;
-            
-            // Tutup modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('tambahLowonganModal'));
-            modal.hide();
-            
-            // Tampilkan notifikasi sukses
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: 'Lowongan berhasil ditambahkan',
-                timer: 2000,
-                showConfirmButton: false
+                    let parent = this.parentElement;
+
+                    // toggle buka / tutup
+                    parent.classList.toggle('open');
+                });
             });
-            
-            // Reset form
-            this.reset();
-        });
-
-
-
-        function confirmLogout() {
-            Swal.fire({
-                title: 'Yakin Logout?',
-                text: "Anda akan keluar dari aplikasi.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Logout',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Berhasil!',
-                        'Anda telah logout.',
-                        'success'
-                    )
-                }
+            // Handle form submit
+            document.getElementById('formTambahLowongan').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Ambil data dari form
+                const judul = document.getElementById('judul').value;
+                const divisi = document.getElementById('divisi_id').options[document.getElementById('divisi_id').selectedIndex].text;
+                
+                // Tutup modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('tambahLowonganModal'));
+                modal.hide();
+                
+                // Tampilkan notifikasi sukses
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Lowongan berhasil ditambahkan',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                
+                // Reset form
+                this.reset();
             });
-        }
-    </>
+
+
+
+            function confirmLogout() {
+                Swal.fire({
+                    title: 'Yakin Logout?',
+                    text: "Anda akan keluar dari aplikasi.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Logout',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Berhasil!',
+                            'Anda telah logout.',
+                            'success'
+                        )
+                    }
+                });
+            }
+        </script>
+    
 </body>
 </html>

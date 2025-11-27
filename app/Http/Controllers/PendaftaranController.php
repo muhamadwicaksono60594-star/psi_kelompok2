@@ -48,18 +48,22 @@ class PendaftaranController extends Controller
         'nim_nis' => 'required|string|max:20',
         'no_telepon' => 'required|string|max:20',
         'alamat' => 'required|string|max:255',
+        'lowongan_id' => 'required|exists:lowongan,id',
         'berkas.*' => 'required|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120', // validasi tiap file
     ]);
-
+    $lowongan = Lowongan::find($request->lowongan_id);
     // Simpan data pendaftar
     $pendaftar = Pendaftaran::create([
         'user_id' => Auth::id(), 
+        'lowongan_id' => $lowongan->id,
         'nama' => $request->nama,
         'asal_instansi' => $request->asal_instansi,
         'jurusan' => $request->jurusan,
         'nim_nis' => $request->nim_nis,
         'no_telepon' => $request->no_telepon,
         'alamat' => $request->alamat,
+        'tanggal_mulai' => $lowongan->tanggal_mulai,
+        'tanggal_selesai' => $lowongan->tanggal_selesai,
         'status' => 'menunggu',
     ]);
 

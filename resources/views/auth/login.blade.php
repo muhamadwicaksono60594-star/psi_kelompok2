@@ -271,7 +271,7 @@
         <div class="login-left">
             <h2>Pendaftaran Praktik Kerja Lapangan dan Magang</h2>
             <div class="logo-container">
-                <img src="{{ asset('images/radar.png') }}" alt="Radar Kediri Logo">
+                <img src="{{ asset('images/rk2.png') }}" alt="Radar Kediri Logo">
             </div>
             <p class="subtitle">Sistem Informasi Pendaftaran Praktik Kerja Lapangan dan Magang<br>Radar Kediri</p>
         </div>

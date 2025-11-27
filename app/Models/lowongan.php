@@ -23,4 +23,10 @@ class lowongan extends Model
     {
         return $this->belongsTo(Divisi::class, 'divisi_id');
     }
+
+    public function pendaftarans()
+    {
+    return $this->hasMany(Pendaftaran::class);
+    }
+
 }

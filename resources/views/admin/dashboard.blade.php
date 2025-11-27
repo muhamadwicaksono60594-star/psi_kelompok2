@@ -163,6 +163,47 @@
         .card.pink .count {
             color: #831843; /* Pink gelap */
         }
+        /* ---- SUBMENU ---- */
+.has-submenu .submenu {
+    list-style: none;
+    padding-left: 3.5rem;
+    padding-top: 0.3rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.submenu-link {
+    display: block;
+    padding: 0.6rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.submenu-link:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+/* Untuk panah */
+.submenu-arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+/* Bila submenu terbuka */
+.has-submenu.open > .submenu {
+    display: flex;
+}
+
+.has-submenu.open > .sidebar-link .submenu-arrow {
+    transform: rotate(180deg);
+}
+
     </style>
 </head>
 <body>
@@ -174,15 +215,201 @@
 
     <!-- Main Content -->
     <main class="main-content">
+        <h2 class="mb-4 text-center fw-bold">📊 Dashboard Rekap Pendaftaran</h2>
+        <form method="GET" action="{{ route('admin.dashboard') }}" class="mb-4">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label for="tahun" class="form-label">Filter Tahun</label>
+                    <select name="tahun" id="tahun" class="form-select">
+                        <option value="">Semua Tahun</option>
+                        @foreach ($tahunList as $t)
+                            <option value="{{ $t }}" {{ request('tahun') == $t ? 'selected' : '' }}>
+                                {{ $t }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-        </div>
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Filter Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">Semua Status</option>
+                        <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                        <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                        <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Terapkan Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div class="row g-3">
+            <!-- Total Pendaftar -->
+            <div class="col-md-3">
+                <a href="{{ route('admin.card.detail', 'total') }}" class="text-decoration-none">
+                    <div class="card bg-primary text-white p-4 text-center">
+                        <h4>Total Pendaftar</h4>
+                        <h2>{{ $totalPendaftar }}</h2>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Diterima -->
+            <div class="col-md-3">
+                <a href="{{ route('admin.card.detail', 'diterima') }}" class="text-decoration-none">
+                    <div class="card bg-success text-white p-4 text-center">
+                        <h4>Diterima</h4>
+                        <h2>{{ $pendaftarDiterima }}</h2>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Ditolak -->
+            <div class="col-md-3">
+                <a href="{{ route('admin.card.detail', 'ditolak') }}" class="text-decoration-none">
+                    <div class="card bg-danger text-white p-4 text-center">
+                        <h4>Ditolak</h4>
+                        <h2>{{ $pendaftarDitolak }}</h2>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Menunggu -->
+            <div class="col-md-3">
+                <a href="{{ route('admin.card.detail', 'menunggu') }}" class="text-decoration-none">
+                    <div class="card" style="background:#ff00ff; color:white; padding:20px; text-align:center;">
+                        <h4>Menunggu</h4>
+                        <h2>{{ $pendaftarMenunggu }}</h2>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Indent -->
+            <div class="col-md-3">
+                <a href="{{ route('admin.card.detail', 'indent') . '?' . http_build_query(request()->query())  }}" class="text-decoration-none">
+                    <div class="card bg-warning text-dark p-4 text-center">
+                        <h4>Pendaftar Indent</h4>
+                        <h2>{{ $pendaftarIndent }}</h2>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Lowongan -->
+            <div class="col-md-3">
+                <a href="{{ route('admin.card.detail', 'lowongan') }}" class="text-decoration-none">
+                    <div class="card bg-info text-white p-4 text-center">
+                        <h4>Pendaftar Lowongan</h4>
+                        <h2>{{ $pendaftarLowongan }}</h2>
+                    </div>
+                </a>
+            </div>
+
+        <!-- Kartu Statistik -->
+        <div class="row g-4">
+            <!-- A. Pie Chart -->
+            <div class="col-md-6">
+                <div class="card shadow-sm p-3">
+                    <h5 class="text-center fw-semibold">Perbandingan Mahasiswa vs Siswa</h5>
+                    <canvas id="pieChart" height="250"></canvas>
+                </div>
+            </div>
+
+            <!-- B. Bar Chart -->
+            <div class="col-md-6">
+                <div class="card shadow-sm p-3">
+                    <h5 class="text-center fw-semibold">Jumlah Pendaftar per Bulan</h5>
+                    <canvas id="barChart" height="250"></canvas>
+                </div>
+            </div>
+
+            <!-- C. Line Chart -->
+            <div class="col-md-6">
+                <div class="card shadow-sm p-3">
+                    <h5 class="text-center fw-semibold">Tren Kenaikan / Penurunan Pendaftar</h5>
+                    <canvas id="lineChart" height="250"></canvas>
+                </div>
+            </div>
+
+            <!-- D. Horizontal Bar Chart -->
+            <div class="col-md-6">
+                <div class="card shadow-sm p-3">
+                    <h5 class="text-center fw-semibold">Ranking Asal Instansi Terbanyak</h5>
+                    <canvas id="horizontalBarChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>  
     </main>
 
-    {{-- <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
+    <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
-    </form> --}}
-
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        const ctxBar = document.getElementById('grafikPendaftaran');
+        const ctxPie = document.getElementById('pieChart');
+    // === A. Pie Chart ===
+    new Chart(document.getElementById('pieChart'), {
+        type: 'pie',
+        data: {
+            labels: @json($pieData['labels']),
+            datasets: [{
+                data: @json($pieData['data']),
+                backgroundColor: ['#36A2EB', '#4CAF50']
+            }]
+        }
+    });
+
+    // === B. Bar Chart (Pendaftar per Bulan) ===
+    new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: @json($bulanLabels),
+            datasets: [{
+                label: 'Jumlah Pendaftar',
+                data: @json($jumlahPendaftar),
+                backgroundColor: '#2196F3'
+            }]
+        },
+        options: {
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // === C. Line Chart ===
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: @json($lineLabels),
+            datasets: [{
+                label: 'Jumlah Pendaftar',
+                data: @json($lineData),
+                fill: false,
+                borderColor: '#9C27B0',
+                tension: 0.3
+            }]
+        }
+    });
+
+    // === D. Horizontal Bar Chart (Ranking Instansi) ===
+    new Chart(document.getElementById('horizontalBarChart'), {
+        type: 'bar',
+        data: {
+            labels: @json($instansiLabels),
+            datasets: [{
+                label: 'Jumlah Pendaftar',
+                data: @json($instansiTotal),
+                backgroundColor: '#FF9800'
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            scales: { x: { beginAtZero: true } }
+        }
+    });
         function confirmLogout() {
             Swal.fire({
                 title: 'Yakin Logout?',
@@ -219,6 +446,55 @@
             };
 
             updateCounter();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.card-stat').forEach(card => {
+                card.addEventListener('click', () => {
+                    const type = card.dataset.type;
+
+                    const tahun = document.getElementById('tahun').value;
+                    const status = document.getElementById('status').value;
+
+                    fetch(`/dashboard/detail-stat?type=${type}&tahun=${tahun}&status=${status}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.error) {
+                                Swal.fire('Oops', data.error, 'error');
+                                return;
+                            }
+
+                            let html = '<ul class="list-group text-start">';
+                            data.list.forEach(item => {
+                                html += `<li class="list-group-item">
+                                    <strong>${item.nama}</strong><br>
+                                    <small>${item.asal_instansi ?? '-'} - 
+                                    <span class="text-primary">${item.status}</span></small>
+                                </li>`;
+                            });
+                            html += '</ul>';
+
+                            Swal.fire({
+                                title: `Detail ${data.title}`,
+                                html: html,
+                                width: 600,
+                                showCloseButton: true,
+                                confirmButtonText: 'Tutup',
+                            });
+                        })
+                        .catch(() => Swal.fire('Error', 'Gagal mengambil data', 'error'));
+                });
+            });
+        });
+        document.querySelectorAll('.submenu-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                let parent = this.parentElement;
+
+                // toggle buka / tutup
+                parent.classList.toggle('open');
+            });
         });
     </script>
 </body>
