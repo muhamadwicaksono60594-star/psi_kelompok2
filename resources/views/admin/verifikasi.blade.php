@@ -196,6 +196,47 @@
             font-size: 3rem;
             font-weight: 700;
         }
+
+                /* ---- SUBMENU ---- */
+.has-submenu .submenu {
+    list-style: none;
+    padding-left: 3.5rem;
+    padding-top: 0.3rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.submenu-link {
+    display: block;
+    padding: 0.6rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    color: rgba(255,255,255,0.85);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.submenu-link:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+/* Untuk panah */
+.submenu-arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+/* Bila submenu terbuka */
+.has-submenu.open > .submenu {
+    display: flex;
+}
+
+.has-submenu.open > .sidebar-link .submenu-arrow {
+    transform: rotate(180deg);
+}
     </style>
 </head>
 <body>
@@ -450,6 +491,17 @@
                 confirmButtonColor: '#ef4444'
             });
         @endif
+
+            document.querySelectorAll('.submenu-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                let parent = this.parentElement;
+
+                // toggle buka / tutup
+                parent.classList.toggle('open');
+            });
+        });
     </script>
 </body>
 </html>

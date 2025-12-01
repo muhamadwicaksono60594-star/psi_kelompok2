@@ -259,13 +259,26 @@ body {
                     <div class="alasan-box">
                         <i class="fas fa-exclamation-triangle"></i>
                         <span><b>Alasan Penolakan:</b> {{ $p->alasanPenolakan->alasan }}</span>
-                    </div>
+                    </div>  
                     @endif
 
-                    @if($p->status != 'menunggu' && $p->surat_balasan)
-                    <a href="{{ asset('storage/' . $p->surat_balasan) }}" class="btn-surat" target="_blank">
-                        <i class="fas fa-file-pdf"></i> Lihat Surat Balasan
-                    </a>
+                    @if($p->status != 'menunggu')
+                        @php
+                            $surat = \App\Models\SuratBalasan::where('pendaftar_id', $p->id)->first();
+                        @endphp
+                        @if($surat)
+                            <a href="{{ asset('storage/' . $surat->file_path) }}" 
+                            target="_blank"     
+                            class="btn btn-outline-success mt-2">
+                            <i class="bi bi-file-earmark-pdf"></i> Download Surat Balasan
+                            </a>
+                        @elseif($p  ->surat_balasan)
+                            <a href="{{ asset('storage/' . $p->surat_balasan) }}" 
+                            class="btn btn-outline-success mt-2" 
+                            target="_blank">
+                                <i class="fas fa-file-pdf"></i> Lihat Surat Balasan
+                            </a>
+                        @endif
                     @endif
                 </div>
                 @empty
